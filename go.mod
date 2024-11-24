@@ -3,7 +3,7 @@ module github.com/henrywhitaker3/terraform-provider-cronitor
 go 1.23
 
 require (
-	github.com/hashicorp/terraform v0.13.0
+	github.com/hashicorp/terraform v1.9.8
 	github.com/json-iterator/go v1.1.12
 )
 
