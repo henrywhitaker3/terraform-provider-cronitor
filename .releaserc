@@ -1,0 +1,12 @@
+{
+  "branches": ["main"],
+  "repositoryUrl": "https://github.com/henrywhitaker3/terraform-provider-cronitor",
+  "plugins": [
+    [
+      "@semantic-release/github",
+      {
+          "successComment": false
+      }
+    ]
+  ]
+}
