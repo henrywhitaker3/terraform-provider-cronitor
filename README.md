@@ -1,7 +1,7 @@
 # Terraform Provider for Cronitor
 
-[![Build Status](https://github.com/nauxliu/terraform-provider-cronitor/workflows/Lint/badge.svg)](https://github.com/nauxliu/terraform-provider-cronitor/actions) 
-[![LICENSE](https://img.shields.io/github/license/nauxliu/terraform-provider-cronitor)](https://github.com/nauxliu/terraform-provider-cronitor/blob/master/LICENSE) 
+[![Build Status](https://github.com/henrywhitaker3/terraform-provider-cronitor/workflows/Lint/badge.svg)](https://github.com/henrywhitaker3/terraform-provider-cronitor/actions) 
+[![LICENSE](https://img.shields.io/github/license/henrywhitaker3/terraform-provider-cronitor)](https://github.com/henrywhitaker3/terraform-provider-cronitor/blob/master/LICENSE) 
 
 Allows you to manage cronitor monitors.
 
@@ -13,7 +13,7 @@ To install this provider, copy and paste this code into your Terraform configura
 terraform {
   required_providers {
     cronitor = {
-      source = "nauxliu/cronitor"
+      source = "henrywhitaker3/cronitor"
       version = ">=1.0.3"
     }
   }

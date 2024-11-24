@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/nauxliu/terraform-provider-cronitor/cronitor"
+	"github.com/henrywhitaker3/terraform-provider-cronitor/cronitor"
 )
 
 func main() {
