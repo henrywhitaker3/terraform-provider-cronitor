@@ -116,8 +116,6 @@ func (r *HeartbeatMonitorResource) Schema(ctx context.Context, req resource.Sche
 				ElementType:         types.StringType,
 				MarkdownDescription: "The environments the monitor runs in",
 				Optional:            true,
-				Computed:            true,
-				Default:             listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{types.StringValue("production")})),
 			},
 			"telemetry_url": schema.StringAttribute{
 				MarkdownDescription: "The url to send pings to",
@@ -126,6 +124,10 @@ func (r *HeartbeatMonitorResource) Schema(ctx context.Context, req resource.Sche
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"group": schema.StringAttribute{
+				MarkdownDescription: "The group the monitor belongs to",
+				Optional:            true,
 			},
 		},
 	}
@@ -166,8 +168,8 @@ func (r *HeartbeatMonitorResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	data.Key = types.StringValue(monitor.Key)
-	data.TelemetryUrl = types.StringValue(fmt.Sprintf("https://cronitor.link/p/%s/%s", r.client.ApiKey, monitor.Key))
+	data.Key = types.StringValue(*monitor.Key)
+	data.TelemetryUrl = types.StringValue(fmt.Sprintf("https://cronitor.link/p/%s/%s", r.client.ApiKey, *monitor.Key))
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
@@ -200,7 +202,7 @@ func (r *HeartbeatMonitorResource) Read(ctx context.Context, req resource.ReadRe
 	fixSliceOrder(state.Tags, &monitor.Tags)
 
 	data = toHeartbeatMonitor(monitor)
-	data.TelemetryUrl = types.StringValue(fmt.Sprintf("https://cronitor.link/p/%s/%s", r.client.ApiKey, monitor.Key))
+	data.TelemetryUrl = types.StringValue(fmt.Sprintf("https://cronitor.link/p/%s/%s", r.client.ApiKey, *monitor.Key))
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -219,7 +221,7 @@ func (r *HeartbeatMonitorResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	upd := heartbeatToMonitorRequest(plan)
-	upd.Key = state.Key.ValueString()
+	upd.Key = state.Key.ValueStringPointer()
 	monitor, err := r.client.UpdateMonitor(ctx, upd)
 	if err != nil {
 		resp.Diagnostics.AddError("failed to update heartbeat monitor", err.Error())
@@ -231,7 +233,7 @@ func (r *HeartbeatMonitorResource) Update(ctx context.Context, req resource.Upda
 	fixSliceOrder(upd.Tags, &monitor.Tags)
 
 	state = toHeartbeatMonitor(monitor)
-	state.TelemetryUrl = types.StringValue(fmt.Sprintf("https://cronitor.link/p/%s/%s", r.client.ApiKey, monitor.Key))
+	state.TelemetryUrl = types.StringValue(fmt.Sprintf("https://cronitor.link/p/%s/%s", r.client.ApiKey, *monitor.Key))
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)

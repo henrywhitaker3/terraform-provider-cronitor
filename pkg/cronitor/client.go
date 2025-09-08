@@ -103,14 +103,14 @@ func (c *Client) CreateMonitor(ctx context.Context, monitor *Monitor) (*Monitor,
 		return nil, fmt.Errorf("failed to unmarshal json response: %w", err)
 	}
 
-	return c.GetMonitor(ctx, mon.Key)
+	return c.GetMonitor(ctx, *mon.Key)
 }
 
 func (c *Client) UpdateMonitor(ctx context.Context, monitor *Monitor) (*Monitor, error) {
-	if monitor.Key == "" {
+	if monitor.Key == nil {
 		return nil, errors.New("cannot update monitor with empty key")
 	}
-	req, err := c.request(ctx, http.MethodPut, fmt.Sprintf("/api/monitors/%s", monitor.Key), monitor)
+	req, err := c.request(ctx, http.MethodPut, fmt.Sprintf("/api/monitors/%s", *monitor.Key), monitor)
 	if err != nil {
 		return nil, fmt.Errorf("failed to build update request: %w", err)
 	}
@@ -129,7 +129,7 @@ func (c *Client) UpdateMonitor(ctx context.Context, monitor *Monitor) (*Monitor,
 		return nil, fmt.Errorf("failed to update monitor, code %d, response %s", resp.StatusCode, string(body))
 	}
 
-	return c.GetMonitor(ctx, monitor.Key)
+	return c.GetMonitor(ctx, *monitor.Key)
 }
 
 func (c *Client) DeleteMonitor(ctx context.Context, id string) error {

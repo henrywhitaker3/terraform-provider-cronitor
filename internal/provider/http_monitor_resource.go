@@ -172,6 +172,10 @@ func (r *HttpMonitorResource) Schema(ctx context.Context, req resource.SchemaReq
 				Computed:            true,
 				Default:             listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{types.StringValue("production")})),
 			},
+			"group": schema.StringAttribute{
+				MarkdownDescription: "The group the monitor belongs to",
+				Optional:            true,
+			},
 		},
 	}
 }
@@ -211,7 +215,7 @@ func (r *HttpMonitorResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	data.Key = types.StringValue(monitor.Key)
+	data.Key = types.StringValue(*monitor.Key)
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
@@ -263,7 +267,7 @@ func (r *HttpMonitorResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	upd := httpToMonitorRequest(plan)
-	upd.Key = state.Key.ValueString()
+	upd.Key = state.Key.ValueStringPointer()
 	monitor, err := r.client.UpdateMonitor(ctx, upd)
 	if err != nil {
 		resp.Diagnostics.AddError("failed to update http monitor", err.Error())

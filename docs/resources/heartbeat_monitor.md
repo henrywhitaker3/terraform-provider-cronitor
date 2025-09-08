@@ -33,6 +33,7 @@ resource "cronitor_heartbeat_monitor" "this" {
 - `environments` (List of String) The environments the monitor runs in
 - `failure_tolerance` (Number) The number of times the monitor can fail before triggering an alert
 - `grace_seconds` (Number) The number of seconds to wait after failure before triggering an alert
+- `group` (String) The group the monitor belongs to
 - `notify` (List of String) Where the alerts are sent when a failure occurs
 - `paused` (Boolean) Whether the monitor is paused
 - `realert_interval` (String) The interval that alerts are re-sent at

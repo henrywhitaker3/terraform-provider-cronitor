@@ -25,6 +25,7 @@ type BaseMonitorModel struct {
 	Timezone          types.String `tfsdk:"timezone"`
 	Tags              types.List   `tfsdk:"tags"`
 	Environments      types.List   `tfsdk:"environments"`
+	Group             types.String `tfsdk:"group"`
 }
 
 type HttpMonitorModel struct {
@@ -98,7 +99,7 @@ func toStringMap(in types.Map) map[string]string {
 func toHttpMonitor(m *cronitor.Monitor) HttpMonitorModel {
 	out := HttpMonitorModel{
 		BaseMonitorModel: BaseMonitorModel{
-			Key:             types.StringValue(m.Key),
+			Key:             types.StringValue(*m.Key),
 			Name:            types.StringValue(m.Name),
 			Disabled:        types.BoolValue(m.Disabled),
 			Paused:          types.BoolValue(m.Paused),
@@ -131,6 +132,9 @@ func toHttpMonitor(m *cronitor.Monitor) HttpMonitorModel {
 	}
 	if m.GraceSeconds != nil {
 		out.GraceSeconds = types.Int32Value(int32(*m.GraceSeconds))
+	}
+	if m.Group != nil {
+		out.Group = types.StringValue(*m.Group)
 	}
 
 	if len(m.Request.Headers) > 0 {
@@ -191,6 +195,10 @@ func httpToMonitorRequest(data HttpMonitorModel) *cronitor.Monitor {
 		tz := data.Timezone.ValueString()
 		out.Timezone = &tz
 	}
+	if data.Group.ValueString() != "" {
+		grp := data.Group.ValueString()
+		out.Group = &grp
+	}
 
 	return out
 }
@@ -198,7 +206,7 @@ func httpToMonitorRequest(data HttpMonitorModel) *cronitor.Monitor {
 func toHeartbeatMonitor(m *cronitor.Monitor) HeartbeatMonitorModel {
 	out := HeartbeatMonitorModel{
 		BaseMonitorModel: BaseMonitorModel{
-			Key:             types.StringValue(m.Key),
+			Key:             types.StringValue(*m.Key),
 			Name:            types.StringValue(m.Name),
 			Disabled:        types.BoolValue(m.Disabled),
 			Paused:          types.BoolValue(m.Paused),
@@ -221,6 +229,9 @@ func toHeartbeatMonitor(m *cronitor.Monitor) HeartbeatMonitorModel {
 	}
 	if m.GraceSeconds != nil {
 		out.GraceSeconds = types.Int32Value(int32(*m.GraceSeconds))
+	}
+	if m.Group != nil {
+		out.Group = types.StringValue(*m.Group)
 	}
 
 	return out
@@ -254,6 +265,10 @@ func heartbeatToMonitorRequest(data HeartbeatMonitorModel) *cronitor.Monitor {
 	if data.Timezone.ValueString() != "" {
 		tz := data.Timezone.ValueString()
 		out.Timezone = &tz
+	}
+	if data.Group.ValueString() != "" {
+		grp := data.Group.ValueString()
+		out.Group = &grp
 	}
 
 	return out

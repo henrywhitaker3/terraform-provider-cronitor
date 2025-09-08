@@ -21,7 +21,7 @@ type Monitor struct {
 	FailureTolerance  *int     `json:"failure_tolerance,omitempty"`
 	GraceSeconds      *int     `json:"grace_seconds,omitempty"`
 	Group             *string  `json:"group,omitempty"`
-	Key               string   `json:"key"`
+	Key               *string  `json:"key,omitempty"`
 	Notify            []string `json:"notify"`
 	Paused            bool     `json:"paused"`
 	Platform          string   `json:"platform"`

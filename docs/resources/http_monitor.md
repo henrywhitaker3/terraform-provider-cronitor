@@ -65,6 +65,7 @@ resource "cronitor_http_monitor" "this" {
 - `failure_tolerance` (Number) The number of times the monitor can fail before triggering an alert
 - `follow_redirects` (Boolean) Whether to follow redirects of the response
 - `grace_seconds` (Number) The number of seconds to wait after failure before triggering an alert
+- `group` (String) The group the monitor belongs to
 - `headers` (Map of String) The headers sent with the request
 - `notify` (List of String) Where the alerts are sent when a failure occurs
 - `paused` (Boolean) Whether the monitor is paused
