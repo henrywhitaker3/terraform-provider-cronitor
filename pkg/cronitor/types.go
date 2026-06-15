@@ -48,4 +48,11 @@ type NotificationList struct {
 	Name          string        `json:"name"`
 	Key           string        `json:"key"`
 	Notifications Notifications `json:"notifications,omitempty"`
+	Environments  []string      `json:"environments,omitempty"`
+}
+
+type Environment struct {
+	Key        string `json:"key"`
+	Name       string `json:"name"`
+	WithAlerts bool   `json:"with_alerts"`
 }

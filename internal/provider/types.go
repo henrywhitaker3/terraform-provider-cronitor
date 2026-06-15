@@ -48,14 +48,21 @@ type HeartbeatMonitorModel struct {
 	TelemetryUrl types.String `tfsdk:"telemetry_url"`
 }
 
+type EnvironmentModel struct {
+	Key        types.String `tfsdk:"key"`
+	Name       types.String `tfsdk:"name"`
+	WithAlerts types.Bool   `tfsdk:"with_alerts"`
+}
+
 type NotificationListModel struct {
-	Name      types.String `tfsdk:"name"`
-	Key       types.String `tfsdk:"key"`
-	Emails    types.List   `tfsdk:"emails"`
-	Slack     types.List   `tfsdk:"slack"`
-	Pagerduty types.List   `tfsdk:"pagerduty"`
-	Phones    types.List   `tfsdk:"phones"`
-	Webhooks  types.List   `tfsdk:"webhooks"`
+	Name         types.String `tfsdk:"name"`
+	Key          types.String `tfsdk:"key"`
+	Emails       types.List   `tfsdk:"emails"`
+	Slack        types.List   `tfsdk:"slack"`
+	Pagerduty    types.List   `tfsdk:"pagerduty"`
+	Phones       types.List   `tfsdk:"phones"`
+	Webhooks     types.List   `tfsdk:"webhooks"`
+	Environments types.List   `tfsdk:"environments"`
 }
 
 func processSlice[T, U any](in []T, t attr.Type, c func(T) U) types.List {
@@ -261,13 +268,14 @@ func heartbeatToMonitorRequest(data HeartbeatMonitorModel) *cronitor.Monitor {
 
 func toNotificationList(l *cronitor.NotificationList) NotificationListModel {
 	return NotificationListModel{
-		Name:      types.StringValue(l.Name),
-		Key:       types.StringValue(l.Key),
-		Emails:    stringSlice(l.Notifications.Emails),
-		Slack:     stringSlice(l.Notifications.Slack),
-		Pagerduty: stringSlice(l.Notifications.Pagerduty),
-		Phones:    stringSlice(l.Notifications.Phones),
-		Webhooks:  stringSlice(l.Notifications.Webhooks),
+		Name:         types.StringValue(l.Name),
+		Key:          types.StringValue(l.Key),
+		Emails:       stringSlice(l.Notifications.Emails),
+		Slack:        stringSlice(l.Notifications.Slack),
+		Pagerduty:    stringSlice(l.Notifications.Pagerduty),
+		Phones:       stringSlice(l.Notifications.Phones),
+		Webhooks:     stringSlice(l.Notifications.Webhooks),
+		Environments: stringSlice(l.Environments),
 	}
 }
 
@@ -282,6 +290,7 @@ func listToListRequest(data NotificationListModel) *cronitor.NotificationList {
 			Phones:    toStringSlice(data.Phones),
 			Webhooks:  toStringSlice(data.Webhooks),
 		},
+		Environments: toStringSlice(data.Environments),
 	}
 }
 

@@ -253,6 +253,108 @@ func (c *Client) DeleteNotificationList(ctx context.Context, list *NotificationL
 	return nil
 }
 
+func (c *Client) GetEnvironment(ctx context.Context, key string) (*Environment, error) {
+	req, err := c.request(ctx, http.MethodGet, fmt.Sprintf("/api/environments/%s", key), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build request: %w", err)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get environment: %w", err)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to get environment code: %d body: %s", resp.StatusCode, string(body))
+	}
+
+	out := &Environment{}
+	if err := json.Unmarshal(body, out); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+	}
+
+	return out, nil
+}
+
+func (c *Client) CreateEnvironment(ctx context.Context, env *Environment) (*Environment, error) {
+	req, err := c.request(ctx, http.MethodPost, "/api/environments", env)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build request: %w", err)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create environment: %w", err)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("failed to create environment code: %d body: %s", resp.StatusCode, string(body))
+	}
+
+	out := &Environment{}
+	if err := json.Unmarshal(body, out); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+	}
+
+	return out, nil
+}
+
+func (c *Client) UpdateEnvironment(ctx context.Context, env *Environment) (*Environment, error) {
+	req, err := c.request(ctx, http.MethodPut, fmt.Sprintf("/api/environments/%s", env.Key), env)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build request: %w", err)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update environment: %w", err)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to update environment code: %d body: %s", resp.StatusCode, string(body))
+	}
+
+	out := &Environment{}
+	if err := json.Unmarshal(body, out); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+	}
+
+	return out, nil
+}
+
+func (c *Client) DeleteEnvironment(ctx context.Context, key string) error {
+	req, err := c.request(ctx, http.MethodDelete, fmt.Sprintf("/api/environments/%s", key), nil)
+	if err != nil {
+		return fmt.Errorf("failed to build request: %w", err)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to delete environment: %w", err)
+	}
+
+	if resp.StatusCode > 299 {
+		return fmt.Errorf("failed to delete environment, code: %d", resp.StatusCode)
+	}
+
+	return nil
+}
+
 func (c *Client) setCreateDefaults(mon *Monitor) {
 	if mon.RealertInterval == "" {
 		mon.RealertInterval = "every 8 hours"

@@ -87,6 +87,13 @@ func (r *NotificationListResource) Schema(ctx context.Context, req resource.Sche
 				Computed:            true,
 				Default:             listdefault.StaticValue(types.ListNull(types.StringType)),
 			},
+			"environments": schema.ListAttribute{
+				ElementType:         types.StringType,
+				MarkdownDescription: "The environments this notification list applies to",
+				Optional:            true,
+				Computed:            true,
+				Default:             listdefault.StaticValue(types.ListNull(types.StringType)),
+			},
 		},
 	}
 }
@@ -159,6 +166,7 @@ func (r *NotificationListResource) Read(ctx context.Context, req resource.ReadRe
 	fixSliceOrder(state.Notifications.Pagerduty, &list.Notifications.Pagerduty)
 	fixSliceOrder(state.Notifications.Phones, &list.Notifications.Phones)
 	fixSliceOrder(state.Notifications.Webhooks, &list.Notifications.Webhooks)
+	fixSliceOrder(state.Environments, &list.Environments)
 
 	data = toNotificationList(list)
 
@@ -190,6 +198,7 @@ func (r *NotificationListResource) Update(ctx context.Context, req resource.Upda
 	fixSliceOrder(upd.Notifications.Pagerduty, &list.Notifications.Pagerduty)
 	fixSliceOrder(upd.Notifications.Phones, &list.Notifications.Phones)
 	fixSliceOrder(upd.Notifications.Webhooks, &list.Notifications.Webhooks)
+	fixSliceOrder(upd.Environments, &list.Environments)
 
 	state = toNotificationList(list)
 

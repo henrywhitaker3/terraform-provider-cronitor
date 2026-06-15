@@ -68,6 +68,11 @@ func (n *NotificationListDataSource) Schema(ctx context.Context, req datasource.
 				MarkdownDescription: "The webhook urls to send notifications to",
 				Computed:            true,
 			},
+			"environments": schema.ListAttribute{
+				ElementType:         types.StringType,
+				MarkdownDescription: "The environments this notification list applies to",
+				Computed:            true,
+			},
 		},
 	}
 }
